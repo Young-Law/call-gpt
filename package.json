@@ -1,15 +1,8 @@
 {
-<<<<<<< HEAD
-  "name": "genai-phone",
-  "version": "1.1.0",
-  "description": "",
-  "main": "index.js",
-=======
   "name": "call-gpt",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
->>>>>>> c46cc77 (repo commit for GCP biuld on Cloud Run)
   "scripts": {
     "inbound": "node ./scripts/inbound-call.js",
     "outbound": "node ./scripts/outbound-call.js",
@@ -18,33 +11,23 @@
     "start": "node app.js"
   },
   "keywords": [],
-<<<<<<< HEAD
-  "author": "Charlie Weems",
-  "license": "MIT",
-  "dependencies": {
-    "@deepgram/sdk": "^3.3.4",
-=======
   "author": "daniel.w@eorumyoung.com",
   "license": "MIT",
   "dependencies": {
     "@deepgram/sdk": "^3.3.4",
-    "@zohocrm/nodejs-sdk-7.0": "^2.0.0",
->>>>>>> c46cc77 (repo commit for GCP biuld on Cloud Run)
     "colors": "^1.4.0",
     "dotenv": "^16.3.1",
     "express": "^4.19.2",
     "express-ws": "^5.0.2",
+    "http-server": "^14.1.1",
     "node-fetch": "^2.7.0",
     "openai": "^4.20.1",
+    "openai-assistant-sdk": "^1.0.8",
     "twilio": "^4.19.3",
     "uuid": "^9.0.1",
     "wavefile": "^11.0.0"
   },
   "devDependencies": {
-<<<<<<< HEAD
-    "@flydotio/dockerfile": "^0.4.11",
-=======
->>>>>>> c46cc77 (repo commit for GCP biuld on Cloud Run)
     "eslint": "^8.57.0",
     "jest": "^29.7.0",
     "nodemon": "^3.0.2"
