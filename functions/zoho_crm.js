@@ -39,7 +39,7 @@ async function createCrmLead(leadDetails) {
 // --- Function to Create an Event (Appointment) ---
 async function createCrmEvent(eventDetails) {
     const token = await getAccessToken();
-    const { event_title, start_datetime, end_datetime, lead_id } = eventDetails;
+    const { event_title, start_datetime, end_datetime, lead_id, staff_id, resource_id } = eventDetails;
 
     const eventPayload = {
         Event_Title: event_title,
@@ -53,6 +53,14 @@ async function createCrmEvent(eventDetails) {
         eventPayload.What_Id = {
             id: lead_id
         };
+    }
+
+    if (staff_id) {
+        eventPayload.Staff_Id = staff_id;
+    }
+
+    if (resource_id) {
+        eventPayload.Resource_Id = resource_id;
     }
 
     const eventData = {

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: call-gpt-config
+data:
+  PORT: "8080"
+  SERVER: "REPLACE_WITH_PUBLIC_HOST"
+  VOICE_MODEL: "aura-asteria-en"
+  RECORDING_ENABLED: "false"
+  ZOHO_APPOINTMENT_TYPES_JSON: |
+    [
+      { "name": "Consultation", "resource_id": "REPLACE_RESOURCE_ID" }
+    ]
+  ZOHO_STAFF_MEMBERS_JSON: |
+    [
+      { "name": "Default Staff", "staff_id": "REPLACE_STAFF_ID" }
+    ]
