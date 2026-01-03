@@ -3,10 +3,10 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-const ZOHO_CLIENT_ID = "process.env.ZOHO_CLIENT_ID";
-const ZOHO_CLIENT_SECRET = "process.env.ZOHO_CLIENT_SECRET";
-const ZOHO_GRANT_TOKEN = "process.env.ZOHO_GRANT_TOKEN";
-let ZOHO_REFRESH_TOKEN = "process.env.ZOHO_REFRESH_TOKEN";
+const ZOHO_CLIENT_ID = process.env.ZOHO_CLIENT_ID;
+const ZOHO_CLIENT_SECRET = process.env.ZOHO_CLIENT_SECRET;
+const ZOHO_GRANT_TOKEN = process.env.ZOHO_GRANT_TOKEN;
+let ZOHO_REFRESH_TOKEN = process.env.ZOHO_REFRESH_TOKEN;
 
 //const envPath = path.resolve(__dirname, '../.env');
 

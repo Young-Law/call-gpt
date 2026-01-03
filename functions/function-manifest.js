@@ -37,6 +37,14 @@ const tools = [
             type: 'string',
             description: "The end date and time for the appointment in ISO 8601 format (e.g., '2025-07-20T14:30:00-05:00').",
           },
+          appointment_type: {
+            type: 'string',
+            description: 'The appointment type name or ID from the available appointment type list.',
+          },
+          staff_member: {
+            type: 'string',
+            description: 'The staff member name or ID from the available staff list.',
+          },
         },
         required: ['first_name', 'last_name', 'email', 'phone', 'event_title', 'start_datetime', 'end_datetime'],
       },
@@ -49,6 +57,48 @@ const tools = [
           }
         }
       }
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'listAppointmentTypes',
+      say: 'Let me pull up the available appointment types.',
+      description: 'Returns the configured list of appointment types for scheduling.',
+      parameters: {
+        type: 'object',
+        properties: {},
+      },
+      returns: {
+        type: 'object',
+        properties: {
+          appointment_types: {
+            type: 'array',
+            description: 'The available appointment types with IDs and names.',
+          },
+        },
+      },
+    },
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'listStaffMembers',
+      say: 'Let me pull up the available staff members.',
+      description: 'Returns the configured list of staff members for scheduling.',
+      parameters: {
+        type: 'object',
+        properties: {},
+      },
+      returns: {
+        type: 'object',
+        properties: {
+          staff_members: {
+            type: 'array',
+            description: 'The available staff members with IDs and names.',
+          },
+        },
+      },
     },
   },
   {

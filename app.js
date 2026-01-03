@@ -32,6 +32,14 @@ app.post('/incoming', (req, res) => {
   }
 });
 
+app.get('/healthz', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
+app.get('/readyz', (req, res) => {
+  res.status(200).json({ status: 'ready' });
+});
+
 app.ws('/connection', (ws) => {
   try {
     ws.on('error', console.error);
@@ -109,6 +117,17 @@ app.ws('/connection', (ws) => {
   }
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+const shutdown = () => {
+  console.log('Shutting down server...'.yellow);
+  server.close(() => {
+    console.log('Server closed.'.yellow);
+    process.exit(0);
+  });
+};
+
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);

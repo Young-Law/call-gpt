@@ -1,7 +1,7 @@
 const { findCrmLeadByEmail, createCrmLead, createCrmEvent } = require('./zoho_crm');
 
 async function createCrmLeadAndEvent(args) {
-  const { first_name, last_name, email, phone, event_title, start_datetime, end_datetime } = args;
+  const { first_name, last_name, email, phone, event_title, start_datetime, end_datetime, appointment_type, staff_member } = args;
 
   try {
     let lead = await findCrmLeadByEmail(email);
@@ -22,6 +22,8 @@ async function createCrmLeadAndEvent(args) {
       start_datetime,
       end_datetime,
       lead_id: leadId,
+      appointment_type,
+      staff_member,
     };
 
     const eventId = await createCrmEvent(eventDetails);
