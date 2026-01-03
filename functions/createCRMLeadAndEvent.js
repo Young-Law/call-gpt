@@ -1,9 +1,94 @@
 const { findCrmLeadByEmail, createCrmLead, createCrmEvent } = require('./zoho_crm');
 
+function normalizeLabel(value) {
+  return value.trim().toLowerCase();
+}
+
+function parseJsonList(value, envName) {
+  if (!value) {
+    return [];
+  }
+  try {
+    const parsed = JSON.parse(value);
+    if (!Array.isArray(parsed)) {
+      throw new Error(`${envName} must be a JSON array.`);
+    }
+    return parsed;
+  } catch (error) {
+    throw new Error(`Invalid ${envName}: ${error.message}`);
+  }
+}
+
+function findOption(options, input, { labelKeys, idKeys }) {
+  if (!input) {
+    return null;
+  }
+  const normalizedInput = normalizeLabel(input);
+  return options.find((option) => {
+    const labelMatch = labelKeys.some((key) => {
+      const labelValue = option[key];
+      return typeof labelValue === 'string' && normalizeLabel(labelValue) === normalizedInput;
+    });
+    if (labelMatch) {
+      return true;
+    }
+    return idKeys.some((key) => option[key] === input);
+  });
+}
+
 async function createCrmLeadAndEvent(args) {
-  const { first_name, last_name, email, phone, event_title, start_datetime, end_datetime } = args;
+  const {
+    first_name,
+    last_name,
+    email,
+    phone,
+    event_title,
+    start_datetime,
+    end_datetime,
+    appointment_type,
+    staff_member,
+  } = args;
 
   try {
+    const appointmentTypes = parseJsonList(
+      process.env.ZOHO_APPOINTMENT_TYPES_JSON,
+      'ZOHO_APPOINTMENT_TYPES_JSON'
+    );
+    const staffMembers = parseJsonList(
+      process.env.ZOHO_STAFF_MEMBERS_JSON,
+      'ZOHO_STAFF_MEMBERS_JSON'
+    );
+
+    if (appointmentTypes.length === 0 || staffMembers.length === 0) {
+      return {
+        status: 'error',
+        message:
+          'Appointment types or staff members are not configured. Please set ZOHO_APPOINTMENT_TYPES_JSON and ZOHO_STAFF_MEMBERS_JSON.',
+      };
+    }
+
+    const selectedAppointmentType = findOption(appointmentTypes, appointment_type, {
+      labelKeys: ['name', 'label', 'appointment_type'],
+      idKeys: ['resource_id', 'resourceId', 'id'],
+    });
+    if (!selectedAppointmentType) {
+      return {
+        status: 'error',
+        message: `Unable to find appointment type "${appointment_type}".`,
+      };
+    }
+
+    const selectedStaffMember = findOption(staffMembers, staff_member, {
+      labelKeys: ['name', 'label', 'staff_member'],
+      idKeys: ['staff_id', 'staffId', 'id'],
+    });
+    if (!selectedStaffMember) {
+      return {
+        status: 'error',
+        message: `Unable to find staff member "${staff_member}".`,
+      };
+    }
+
     let lead = await findCrmLeadByEmail(email);
     let leadId;
 
@@ -22,6 +107,11 @@ async function createCrmLeadAndEvent(args) {
       start_datetime,
       end_datetime,
       lead_id: leadId,
+      staff_id: selectedStaffMember.staff_id || selectedStaffMember.staffId || selectedStaffMember.id,
+      resource_id:
+        selectedAppointmentType.resource_id ||
+        selectedAppointmentType.resourceId ||
+        selectedAppointmentType.id,
     };
 
     const eventId = await createCrmEvent(eventDetails);
