@@ -37,8 +37,26 @@ const tools = [
             type: 'string',
             description: "The end date and time for the appointment in ISO 8601 format (e.g., '2025-07-20T14:30:00-05:00').",
           },
+          appointment_type: {
+            type: 'string',
+            description: 'The appointment type to book (matches a configured Zoho appointment type list).',
+          },
+          staff_member: {
+            type: 'string',
+            description: 'The staff member to assign (matches a configured Zoho staff list).',
+          },
         },
-        required: ['first_name', 'last_name', 'email', 'phone', 'event_title', 'start_datetime', 'end_datetime'],
+        required: [
+          'first_name',
+          'last_name',
+          'email',
+          'phone',
+          'event_title',
+          'start_datetime',
+          'end_datetime',
+          'appointment_type',
+          'staff_member',
+        ],
       },
       returns: {
         type: 'object',

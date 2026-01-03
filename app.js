@@ -32,6 +32,10 @@ app.post('/incoming', (req, res) => {
   }
 });
 
+app.get('/healthz', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 app.ws('/connection', (ws) => {
   try {
     ws.on('error', console.error);
