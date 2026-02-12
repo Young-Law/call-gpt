@@ -1,7 +1,4 @@
-require('dotenv').config();
-const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
+const { zohoAuthClient, validateZohoEnv } = require('./zoho_auth_client');
 
 const ZOHO_CLIENT_ID = process.env.ZOHO_CLIENT_ID;
 const ZOHO_CLIENT_SECRET = process.env.ZOHO_CLIENT_SECRET;
@@ -49,32 +46,16 @@ async function initializeRefreshToken() {
     console.error('Error initializing refresh token:', error.response ? error.response.data : error.message);
     throw new Error('Could not initialize refresh token.');
   }
+function getAccessToken() {
+  return zohoAuthClient.getAccessToken();
 }
-*/
-// --- Main Function: Get a valid Access Token ---
-async function getAccessToken() {
-  if (!ZOHO_REFRESH_TOKEN) {
-    // If there's no refresh token, try to get one using the grant token.
-    return await initializeRefreshToken();
-  }
 
-  try {
-    const response = await axios.post('https://accounts.zoho.com/oauth/v2/token', null, {
-      params: {
-        refresh_token: ZOHO_REFRESH_TOKEN,
-        client_id: ZOHO_CLIENT_ID,
-        client_secret: ZOHO_CLIENT_SECRET,
-        grant_type: 'refresh_token',
-      },
-    });
-    return response.data.access_token;
-  } catch (error) {
-    console.error('Error refreshing access token:', error.response ? error.response.data : error.message);
-    throw new Error('Could not refresh access token. The refresh token may be invalid or revoked.');
-  }
+function executeWithAuthRetry(requestFn) {
+  return zohoAuthClient.executeWithAuthRetry(requestFn);
 }
 
 module.exports = {
   getAccessToken,
-  initializeRefreshToken,
+  executeWithAuthRetry,
+  validateZohoEnv,
 };
