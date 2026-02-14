@@ -3,13 +3,25 @@ const EventEmitter = require('events');
 const OpenAI = require('openai');
 const tools = require('../functions/function-manifest');
 
-// Import all functions included in function manifest
-// Note: the function name and file name must be the same
-const availableFunctions = {};
-tools.forEach((tool) => {
-  let functionName = tool.function.name;
-  availableFunctions[functionName] = require(`../functions/${functionName}`);
-});
+const functionRegistry = {
+  createCrmLeadAndEvent: require('../functions/createCrmLeadAndEvent'),
+  checkAvailability: require('../functions/checkAvailability'),
+};
+
+function validateFunctionRegistry(manifestTools, registry) {
+  const missingHandlers = manifestTools
+    .map((tool) => tool?.function?.name)
+    .filter((name) => !name || typeof registry[name] !== 'function');
+
+  if (missingHandlers.length > 0) {
+    throw new Error(
+      `Missing function handlers for tools: ${missingHandlers.join(', ')}. ` +
+      `Add them to functionRegistry in services/gpt-service.js.`
+    );
+  }
+}
+
+validateFunctionRegistry(tools, functionRegistry);
 
 class GptService extends EventEmitter {
   constructor() {
@@ -92,7 +104,7 @@ class GptService extends EventEmitter {
       if (finishReason === 'tool_calls') {
         // parse JSON string of args into JSON object
 
-        const functionToCall = availableFunctions[functionName];
+        const functionToCall = functionRegistry[functionName];
         const validatedArgs = this.validateFunctionArgs(functionArgs);
         
         // Say a pre-configured message from the function manifest
