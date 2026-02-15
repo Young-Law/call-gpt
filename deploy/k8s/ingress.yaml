@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: call-gpt
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.allow-http: "false"
+    networking.gke.io/managed-certificates: call-gpt-cert
+spec:
+  rules:
+    - host: call-gpt.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: call-gpt
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - call-gpt.example.com
+      secretName: call-gpt-tls
