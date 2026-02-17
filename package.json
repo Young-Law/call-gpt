@@ -9,7 +9,7 @@
     "test": "npm run check",
     "dev": "nodemon app.js",
     "start": "node app.js",
-    "check": "node --check app.js src/http/connectionRouter.js src/http/incomingRouter.js src/session/CallSessionManager.js src/runtime/core/CallRuntime.js src/tools/tool-definitions.js src/state/RedisSessionStore.js",
+    "check": "node --check app.js functions/zoho_auth.js functions/zoho_crm.js src/session/CallSessionManager.js src/state/RedisSessionStore.js functions/function-manifest.js",
     "test:legacy": "jest",
     "test:modern": "jest --config test/modern/jest.config.js",
     "lint": "eslint .",
@@ -25,7 +25,6 @@
     "express": "^4.19.2",
     "express-ws": "^5.0.2",
     "http-server": "^14.1.1",
-    "node-fetch": "^2.7.0",
     "openai": "^4.20.1",
     "openai-assistant-sdk": "^1.0.8",
     "twilio": "^4.19.3",
@@ -36,5 +35,8 @@
     "eslint": "^8.57.0",
     "jest": "^29.7.0",
     "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

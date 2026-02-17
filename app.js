@@ -4,9 +4,6 @@ const express = require('express');
 const expressWs = require('express-ws');
 const { incomingRouter } = require('./src/http/incomingRouter');
 const { registerConnectionRoute } = require('./src/http/connectionRouter');
-const { validateEnv } = require('./src/config/validateEnv');
-
-validateEnv();
 
 const app = express();
 const wsInstance = expressWs(app);
