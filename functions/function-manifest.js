@@ -46,7 +46,7 @@ const tools = [
             description: 'The staff member name or ID from the available staff list.',
           },
         },
-        required: ['first_name', 'last_name', 'email', 'phone', 'event_title', 'start_datetime', 'end_datetime'],
+        required: ['first_name', 'last_name', 'email', 'phone', 'event_title', 'start_datetime', 'end_datetime', 'appointment_type', 'staff_member'],
       },
       returns: {
         type: 'object',
