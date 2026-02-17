@@ -1,17 +1,14 @@
 # call-gpt
 
-## Runtime architecture
+## Testing during modernization
 
-The call runtime, tool definitions, and third-party integrations are now fully composed from `src/`.
+This repository is currently in a partial modernization state (runtime logic moving into `src/` while some legacy modules remain in `functions/`).
 
-- Runtime orchestration: `src/runtime/core`
-- Runtime adapters (OpenAI, Deepgram, Twilio, stream): `src/runtime/adapters`
-- Tool metadata + handlers: `src/tools`
-- Zoho integration boundary: `src/integrations/zoho`
-- Configuration access: `src/config`
+To keep CI and Codex automation reliable during this transition:
 
-## Checks
+- `npm test` now runs `npm run check`
+- `npm run check` performs `node --check` on critical entrypoints/modules to catch syntax and structural regressions quickly
+- Legacy Jest suites are still available via `npm run test:legacy`
+- New focused modernization tests can be run via `npm run test:modern`
 
-- `npm test` runs fast syntax guard checks
-- `npm run lint` runs ESLint
-- `npm run test:modern` runs modern Jest suites
+Once legacy modules are fully restored/ported, `npm test` can be switched back to the full test suite.
