@@ -2,14 +2,9 @@ require('colors');
 const EventEmitter = require('events');
 const OpenAI = require('openai');
 const tools = require('../functions/function-manifest');
+const { loadAvailableFunctions } = require('../src/functions/registry');
 
-// Import all functions included in function manifest
-// Note: the function name and file name must be the same
-const availableFunctions = {};
-tools.forEach((tool) => {
-  let functionName = tool.function.name;
-  availableFunctions[functionName] = require(`../functions/${functionName}`);
-});
+const availableFunctions = loadAvailableFunctions(tools);
 
 class GptService extends EventEmitter {
   constructor() {
