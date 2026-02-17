@@ -1,6 +1,7 @@
 require('colors');
 const EventEmitter = require('events');
-const { tools, toolHandlers } = require('../../tools/tool-definitions');
+const { tools } = require('../../tools/tool-definitions');
+const { getToolHandler } = require('../../tools/registry');
 const { OpenAiAdapter } = require('./OpenAiAdapter');
 const { config } = require('../../config');
 
@@ -46,7 +47,7 @@ class GptService extends EventEmitter {
       }
 
       if (finishReason === 'tool_calls') {
-        const functionToCall = toolHandlers[functionName];
+        const functionToCall = getToolHandler(functionName);
         const validatedArgs = this.validateFunctionArgs(functionArgs);
         const say = tools.find((tool) => tool.function.name === functionName)?.function?.say;
         if (say) this.emit('gptreply', { partialResponseIndex: null, partialResponse: say }, interactionCount);
