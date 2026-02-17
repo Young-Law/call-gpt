@@ -1,4 +1,4 @@
 module.exports = {
   testEnvironment: 'node',
-  testMatch: ['<rootDir>/test/modern/**/*.test.js'],
+  testMatch: ['<rootDir>/**/*.test.js'],
 };
