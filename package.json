@@ -6,9 +6,12 @@
   "scripts": {
     "inbound": "node ./scripts/inbound-call.js",
     "outbound": "node ./scripts/outbound-call.js",
-    "test": "jest",
+    "test": "npm run check",
     "dev": "nodemon app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "check": "node --check app.js functions/zoho_auth.js functions/zoho_crm.js src/session/CallSessionManager.js src/state/RedisSessionStore.js functions/function-manifest.js",
+    "test:legacy": "jest",
+    "test:modern": "jest --config test/modern/jest.config.js"
   },
   "keywords": [],
   "author": "daniel.w@eorumyoung.com",

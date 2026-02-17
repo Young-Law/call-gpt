@@ -24,35 +24,67 @@ class CallSessionManager {
     this.ws.on('error', console.error);
 
     this.ws.on('message', async (data) => {
-      const msg = JSON.parse(data);
-      await this.handleIncomingMessage(msg);
+      try {
+        const msg = JSON.parse(data);
+        await this.handleIncomingMessage(msg);
+      } catch (error) {
+        console.error('Error handling websocket message:', {
+          callSid: this.callSid,
+          streamSid: this.streamSid,
+          error: error.message,
+        });
+      }
     });
 
     this.transcriptionService.on('utterance', async (text) => {
-      if (this.marks.length > 0 && text?.length > 5) {
-        console.log('Twilio -> Interruption, Clearing stream'.red);
-        this.ws.send(
-          JSON.stringify({
-            streamSid: this.streamSid,
-            event: 'clear',
-          }),
-        );
+      try {
+        if (this.marks.length > 0 && text?.length > 5) {
+          console.log('Twilio -> Interruption, Clearing stream'.red);
+          this.ws.send(
+            JSON.stringify({
+              streamSid: this.streamSid,
+              event: 'clear',
+            }),
+          );
+        }
+      } catch (error) {
+        console.error('Error handling utterance event:', {
+          callSid: this.callSid,
+          streamSid: this.streamSid,
+          error: error.message,
+        });
       }
     });
 
     this.transcriptionService.on('transcription', async (text) => {
-      if (!text) {
-        return;
+      try {
+        if (!text) {
+          return;
+        }
+        console.log(`Interaction ${this.interactionCount} – STT -> GPT: ${text}`.yellow);
+        await Promise.resolve(this.gptService.completion(text, this.interactionCount));
+        this.interactionCount += 1;
+        await this.saveSessionState('active');
+      } catch (error) {
+        console.error('Error handling transcription event:', {
+          callSid: this.callSid,
+          streamSid: this.streamSid,
+          error: error.message,
+        });
       }
-      console.log(`Interaction ${this.interactionCount} – STT -> GPT: ${text}`.yellow);
-      this.gptService.completion(text, this.interactionCount);
-      this.interactionCount += 1;
-      await this.saveSessionState('active');
     });
 
     this.gptService.on('gptreply', async (gptReply, icount) => {
-      console.log(`Interaction ${icount}: GPT -> TTS: ${gptReply.partialResponse}`.green);
-      this.ttsService.generate(gptReply, icount);
+      try {
+        console.log(`Interaction ${icount}: GPT -> TTS: ${gptReply.partialResponse}`.green);
+        await Promise.resolve(this.ttsService.generate(gptReply, icount));
+      } catch (error) {
+        console.error('Error handling gptreply event:', {
+          callSid: this.callSid,
+          streamSid: this.streamSid,
+          error: error.message,
+        });
+      }
     });
 
     this.ttsService.on('speech', (responseIndex, audio, label, icount) => {
