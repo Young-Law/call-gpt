@@ -131,3 +131,4 @@ class GptService extends EventEmitter {
 }
 
 module.exports = { GptService };
+module.exports = require('../src/services/gpt-service');

@@ -1,12 +1,14 @@
 const express = require('express');
 const VoiceResponse = require('twilio').twiml.VoiceResponse;
 
+const { config } = require('../config');
+
 const incomingRouter = express.Router();
 
 incomingRouter.post('/incoming', (req, res) => {
   try {
     const forwardedHost = req.get('x-forwarded-host');
-    const host = forwardedHost || req.get('host') || process.env.SERVER;
+    const host = forwardedHost || req.get('host') || config.server.host;
     const response = new VoiceResponse();
     const connect = response.connect();
     connect.stream({ url: `wss://${host}/connection` });
