@@ -4,6 +4,15 @@ const express = require('express');
 const expressWs = require('express-ws');
 const { incomingRouter } = require('./src/http/incomingRouter');
 const { registerConnectionRoute } = require('./src/http/connectionRouter');
+const { validateEnv } = require('./src/config/env');
+
+
+try {
+  validateEnv();
+} catch (error) {
+  console.error(`Configuration error: ${error.message}`);
+  process.exit(1);
+}
 
 const app = express();
 const wsInstance = expressWs(app);
